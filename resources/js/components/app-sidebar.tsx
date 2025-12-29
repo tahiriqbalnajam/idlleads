@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Handshake, Users } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Handshake, Users, Package } from 'lucide-react';
 import AppLogo from './app-logo';
 
 export function AppSidebar() {
@@ -33,6 +33,11 @@ export function AppSidebar() {
             href: '/deals',
             icon: Handshake,
         }] : []),
+        {
+            title: 'Products',
+            href: '/products',
+            icon: Package,
+        },
         ...(hasPermission('view menu users') ? [{
             title: 'Users',
             href: '/users',

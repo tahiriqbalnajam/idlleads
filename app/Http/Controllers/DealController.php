@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Deal;
 use App\Models\User;
+use App\Models\Product;
 use App\Models\DealTodo;
 use App\Models\DealComment;
 use App\Models\DealMessage;
@@ -23,6 +24,7 @@ class DealController extends Controller
         $query = Deal::with([
                 'todos',
                 'assignedTo:id,name',
+                'product:id,name,price',
                 'comments' => function ($query) {
                     $query->latest();
                 },
@@ -55,6 +57,11 @@ class DealController extends Controller
                         'id' => $deal->assignedTo->id,
                         'name' => $deal->assignedTo->name,
                     ] : null,
+                    'product' => $deal->product ? [
+                        'id' => $deal->product->id,
+                        'name' => $deal->product->name,
+                        'price' => $deal->product->price,
+                    ] : null,
                     'created_at' => $deal->created_at,
                     'updated_at' => $deal->updated_at,
                     'todos' => $deal->todos,
@@ -64,10 +71,12 @@ class DealController extends Controller
             });
 
         $users = User::select('id', 'name')->get();
+        $products = Product::select('id', 'name', 'price')->get();
 
         return Inertia::render('deals/index', [
             'deals' => $deals,
             'users' => $users,
+            'products' => $products,
             'filters' => [
                 'users' => $filterUsers,
             ],
@@ -85,6 +94,7 @@ class DealController extends Controller
             'stage' => 'required|in:new,call,in-progress,meeting,deal-lost,close-deal',
             'priority' => 'required|in:low,medium,high',
             'assignedTo' => 'nullable|exists:users,id',
+            'productId' => 'nullable|exists:products,id',
             'value' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
             'todos' => 'nullable|array',
@@ -102,6 +112,7 @@ class DealController extends Controller
             $deal = Deal::create([
                 'user_id' => auth()->id(),
                 'assigned_to' => $validated['assignedTo'] ?? null,
+                'product_id' => $validated['productId'] ?? null,
                 'client_name' => $validated['clientName'],
                 'phone_number' => isset($validated['phoneNumber']) ? '+92' . $validated['phoneNumber'] : null,
                 'stage' => $validated['stage'],
@@ -167,6 +178,7 @@ class DealController extends Controller
             'stage' => 'sometimes|required|in:new,call,in-progress,meeting,deal-lost,close-deal',
             'priority' => 'sometimes|required|in:low,medium,high',
             'assignedTo' => 'nullable|exists:users,id',
+            'productId' => 'nullable|exists:products,id',
             'value' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
             'todos' => 'nullable|array',
@@ -202,6 +214,10 @@ class DealController extends Controller
             
             if (array_key_exists('assignedTo', $validated)) {
                 $updateData['assigned_to'] = $validated['assignedTo'];
+            }
+            
+            if (array_key_exists('productId', $validated)) {
+                $updateData['product_id'] = $validated['productId'];
             }
             
             if (isset($validated['value'])) {

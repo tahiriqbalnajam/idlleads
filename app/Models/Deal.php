@@ -11,6 +11,7 @@ class Deal extends Model
     protected $fillable = [
         'user_id',
         'assigned_to',
+        'product_id',
         'client_name',
         'phone_number',
         'stage',
@@ -31,6 +32,11 @@ class Deal extends Model
     public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
     }
 
     public function todos(): HasMany

@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { type Deal } from '@/types';
+import { type Deal, type Product } from '@/types';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 interface DealFormProps {
     deal?: Deal;
     users?: Array<{ id: number; name: string }>;
+    products?: Product[];
     onSubmit: (data: DealFormData) => void;
     disabled?: boolean;
 }
@@ -25,6 +26,7 @@ export interface DealFormData {
     stage: string;
     priority: string;
     assignedTo?: number | null;
+    productId?: number | null;
 }
 
 const stages = [
@@ -42,7 +44,7 @@ const priorities = [
     { value: 'high', label: 'High' },
 ];
 
-export default function DealForm({ deal, users = [], onSubmit, disabled = false }: DealFormProps) {
+export default function DealForm({ deal, users = [], products = [], onSubmit, disabled = false }: DealFormProps) {
     const [clientName, setClientName] = useState(deal?.clientName || '');
     const [phoneNumber, setPhoneNumber] = useState(
         deal?.phoneNumber ? deal.phoneNumber.replace('+92', '') : ''
@@ -51,6 +53,9 @@ export default function DealForm({ deal, users = [], onSubmit, disabled = false 
     const [priority, setPriority] = useState(deal?.priority || 'medium');
     const [assignedTo, setAssignedTo] = useState<string>(
         deal?.assignedTo?.id?.toString() || ''
+    );
+    const [productId, setProductId] = useState<string>(
+        deal?.product?.id?.toString() || ''
     );
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +74,7 @@ export default function DealForm({ deal, users = [], onSubmit, disabled = false 
             stage,
             priority,
             assignedTo: assignedTo && assignedTo !== 'none' ? parseInt(assignedTo) : null,
+            productId: productId && productId !== 'none' ? parseInt(productId) : null,
         });
     };
 
@@ -181,7 +187,29 @@ export default function DealForm({ deal, users = [], onSubmit, disabled = false 
                             </SelectContent>
                         </Select>
                     </div>
-
+                    <div className="space-y-2">
+                        <Label htmlFor="product">Product</Label>
+                        <Select
+                            value={productId}
+                            onValueChange={setProductId}
+                            disabled={disabled}
+                        >
+                            <SelectTrigger id="product">
+                                <SelectValue placeholder="Select product" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="none">None</SelectItem>
+                                {products.map((product) => (
+                                    <SelectItem
+                                        key={product.id}
+                                        value={product.id!.toString()}
+                                    >
+                                        {product.name} - ${product.price}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                     <Button type="submit" className="w-full" disabled={disabled}>
                         {deal ? 'Update Deal' : 'Create Deal'}
                     </Button>

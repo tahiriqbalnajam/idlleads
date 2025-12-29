@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { type Deal } from '@/types';
+import { type Deal, type Product } from '@/types';
 import { router } from '@inertiajs/react';
 import {
     Sheet,
@@ -15,6 +15,7 @@ interface DealSheetProps {
     onOpenChange: (open: boolean) => void;
     deal?: Deal | null;
     users?: Array<{ id: number; name: string }>;
+    products?: Product[];
 }
 
 export default function DealSheet({
@@ -22,6 +23,7 @@ export default function DealSheet({
     onOpenChange,
     deal,
     users = [],
+    products = [],
 }: DealSheetProps) {
     const [isSaved, setIsSaved] = useState(false);
     const activitiesRef = useRef<ActivitiesRef>(null);
@@ -35,6 +37,7 @@ export default function DealSheet({
             stage: data.stage,
             priority: data.priority,
             assignedTo: data.assignedTo,
+            productId: data.productId,
             todos: activities?.todos.map(todo => ({
                 text: todo.text,
                 due_date: todo.dueDate ? todo.dueDate.toISOString().split('T')[0] : null,
@@ -93,6 +96,7 @@ export default function DealSheet({
                         <DealForm
                             deal={deal ?? undefined}
                             users={users}
+                            products={products}
                             onSubmit={handleSubmit}
                         />
                     </div>

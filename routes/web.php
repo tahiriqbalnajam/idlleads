@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\DealController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserManagementController;
 
 Route::get('/', function () {
@@ -18,6 +19,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::resource('deals', DealController::class)->except(['show', 'create', 'edit']);
+    
+    Route::resource('products', ProductController::class)->except(['show', 'create', 'edit']);
     
     // Deal activities routes
     Route::post('deals/{deal}/todos', [DealController::class, 'storeTodo'])->name('deals.todos.store');

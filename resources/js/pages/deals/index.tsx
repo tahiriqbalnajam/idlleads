@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type Deal } from '@/types';
+import { type BreadcrumbItem, type Deal, type Product } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -33,6 +33,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 interface DealsProps {
     deals: Deal[];
     users: Array<{ id: number; name: string }>;
+    products: Product[];
     filters: {
         users: string[];
     };
@@ -173,7 +174,7 @@ function DroppableStageColumn({ stage, deals, onDealClick }: DroppableStageColum
     );
 }
 
-export default function Deals({ deals, users, filters }: DealsProps) {
+export default function Deals({ deals, users, products, filters }: DealsProps) {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
     const [activeDeal, setActiveDeal] = useState<Deal | null>(null);
@@ -391,6 +392,7 @@ export default function Deals({ deals, users, filters }: DealsProps) {
                 onOpenChange={setIsSheetOpen}
                 deal={selectedDeal}
                 users={users}
+                products={products}
             />
         </AppLayout>
     );

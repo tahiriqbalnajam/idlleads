@@ -54,6 +54,11 @@ export interface Deal {
         id: number;
         name: string;
     } | null;
+    product?: {
+        id: number;
+        name: string;
+        price: number;
+    } | null;
     value?: number;
     notes?: string;
     created_at?: string;
@@ -83,4 +88,12 @@ export interface Deal {
         created_at: string;
         updated_at: string;
     }>;
+}
+
+export interface Product {
+    id?: number;
+    name: string;
+    price: number;
+    created_at?: string;
+    updated_at?: string;
 }
