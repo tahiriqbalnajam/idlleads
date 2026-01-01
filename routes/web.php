@@ -6,6 +6,7 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\WhatsAppController;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [
@@ -21,6 +22,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('deals', DealController::class)->except(['show', 'create', 'edit']);
     
     Route::resource('products', ProductController::class)->except(['show', 'create', 'edit']);
+    
+    // WhatsApp routes
+    Route::get('whatsapp', [WhatsAppController::class, 'index'])->name('whatsapp');
+    Route::get('whatsapp/status', [WhatsAppController::class, 'status'])->name('whatsapp.status');
+    Route::post('whatsapp/send-message', [WhatsAppController::class, 'sendMessage'])->name('whatsapp.send-message');
+    Route::post('whatsapp/send-media', [WhatsAppController::class, 'sendMedia'])->name('whatsapp.send-media');
+    Route::get('whatsapp/chats', [WhatsAppController::class, 'getChats'])->name('whatsapp.chats');
+    Route::get('whatsapp/messages/{jid}', [WhatsAppController::class, 'getMessages'])->name('whatsapp.messages');
+    Route::post('whatsapp/request-pairing-code', [WhatsAppController::class, 'requestPairingCode'])->name('whatsapp.pairing-code');
+    Route::post('whatsapp/logout', [WhatsAppController::class, 'logout'])->name('whatsapp.logout');
+    Route::post('whatsapp/check-number', [WhatsAppController::class, 'checkNumber'])->name('whatsapp.check-number');
     
     // Deal activities routes
     Route::post('deals/{deal}/todos', [DealController::class, 'storeTodo'])->name('deals.todos.store');
