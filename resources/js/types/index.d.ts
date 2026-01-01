@@ -96,4 +96,16 @@ export interface Product {
     price: number;
     created_at?: string;
     updated_at?: string;
+    deals_count?: number;
+    recent_deals?: Array<{
+        id: number;
+        client_name: string;
+        stage: string;
+        value?: number;
+        user: {
+            id: number;
+            name: string;
+        };
+        created_at: string;
+    }>;
 }

@@ -13,7 +13,18 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::latest()
+        $products = Product::withCount(['deals' => function ($query) {
+                // Only count active deals (not lost or closed)
+                $query->whereNotIn('stage', ['deal-lost', 'close-deal']);
+            }])
+            ->with(['deals' => function ($query) {
+                // Load recent active deals for each product
+                $query->whereNotIn('stage', ['deal-lost', 'close-deal'])
+                      ->with('user:id,name')
+                      ->latest()
+                      ->limit(3);
+            }])
+            ->latest()
             ->get()
             ->map(function ($product) {
                 return [
@@ -22,6 +33,17 @@ class ProductController extends Controller
                     'price' => $product->price,
                     'created_at' => $product->created_at,
                     'updated_at' => $product->updated_at,
+                    'deals_count' => $product->deals_count,
+                    'recent_deals' => $product->deals->map(function ($deal) {
+                        return [
+                            'id' => $deal->id,
+                            'client_name' => $deal->client_name,
+                            'stage' => $deal->stage,
+                            'value' => $deal->value,
+                            'user' => $deal->user,
+                            'created_at' => $deal->created_at,
+                        ];
+                    }),
                 ];
             });
 
