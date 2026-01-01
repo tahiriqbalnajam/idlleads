@@ -7,6 +7,8 @@ use App\Http\Controllers\DealController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\WhatsAppController;
+use App\Models\Deal;
+use App\Models\Product;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -14,7 +16,69 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        // Get deals assigned to the current authenticated user
+        $deals = Deal::with(['assignedTo:id,name', 'product:id,name,price'])
+            ->where('assigned_to', auth()->id())
+            ->latest()
+            ->get()
+            ->map(function ($deal) {
+                return [
+                    'id' => $deal->id,
+                    'clientName' => $deal->client_name,
+                    'phoneNumber' => $deal->phone_number,
+                    'stage' => $deal->stage,
+                    'priority' => $deal->priority,
+                    'value' => $deal->value,
+                    'assignedTo' => $deal->assignedTo ? [
+                        'id' => $deal->assignedTo->id,
+                        'name' => $deal->assignedTo->name,
+                    ] : null,
+                    'product' => $deal->product ? [
+                        'id' => $deal->product->id,
+                        'name' => $deal->product->name,
+                        'price' => $deal->product->price,
+                    ] : null,
+                    'created_at' => $deal->created_at,
+                    'updated_at' => $deal->updated_at,
+                ];
+            });
+
+        // Get products that have deals assigned to current user
+        $products = Product::whereHas('deals', function ($query) {
+                $query->where('assigned_to', auth()->id());
+            })
+            ->withCount(['deals' => function ($query) {
+                $query->where('assigned_to', auth()->id());
+            }])
+            ->with(['deals' => function ($query) {
+                $query->where('assigned_to', auth()->id())
+                      ->latest();
+            }])
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'deals_count' => $product->deals_count,
+                    'deals' => $product->deals->map(function ($deal) {
+                        return [
+                            'id' => $deal->id,
+                            'client_name' => $deal->client_name,
+                            'phone_number' => $deal->phone_number,
+                            'stage' => $deal->stage,
+                            'priority' => $deal->priority,
+                            'value' => $deal->value,
+                            'created_at' => $deal->created_at,
+                        ];
+                    }),
+                ];
+            });
+
+        return Inertia::render('dashboard', [
+            'deals' => $deals,
+            'products' => $products,
+        ]);
     })->name('dashboard');
 
     Route::resource('deals', DealController::class)->except(['show', 'create', 'edit']);

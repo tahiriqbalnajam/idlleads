@@ -98,6 +98,7 @@ export default function ProductsIndex({ products }: ProductsProps) {
                                     <TableRow>
                                         <TableHead>Name</TableHead>
                                         <TableHead>Price</TableHead>
+                                        <TableHead>Deals</TableHead>
                                         <TableHead>Created</TableHead>
                                         <TableHead className="text-right">Actions</TableHead>
                                     </TableRow>
@@ -110,6 +111,30 @@ export default function ProductsIndex({ products }: ProductsProps) {
                                             </TableCell>
                                             <TableCell>
                                                 {formatPrice(product.price)}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="space-y-1">
+                                                    <div className="text-sm font-medium">
+                                                        {product.deals_count || 0} active deals
+                                                    </div>
+                                                    {product.recent_deals && product.recent_deals.length > 0 && (
+                                                        <div className="space-y-1">
+                                                            {product.recent_deals.map((deal) => (
+                                                                <div key={deal.id} className="text-xs text-muted-foreground">
+                                                                    <span className="font-medium">{deal.client_name}</span>
+                                                                    <span className="ml-2 px-1.5 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs">
+                                                                        {deal.stage.replace('-', ' ')}
+                                                                    </span>
+                                                                    {deal.value && (
+                                                                        <span className="ml-2">
+                                                                            ${deal.value.toLocaleString()}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </TableCell>
                                             <TableCell>
                                                 {product.created_at ? 
