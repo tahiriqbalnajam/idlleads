@@ -7,6 +7,7 @@ import {
     SheetHeader,
     SheetTitle,
 } from '@/components/ui/sheet';
+import { FileText, Plus, Sparkles } from 'lucide-react';
 import DealForm, { type DealFormData } from './deal-form';
 import Activities, { type ActivitiesRef } from './activities';
 
@@ -84,10 +85,31 @@ export default function DealSheet({
                 side="right"
                 className="w-[90vw] max-w-[90vw] p-0 sm:w-[90vw] sm:max-w-[90vw]"
             >
-                <SheetHeader className="border-b p-6">
-                    <SheetTitle>
-                        {deal ? 'Edit Deal' : 'Add New Deal'}
-                    </SheetTitle>
+                <SheetHeader className="border-b-2 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6">
+                    <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-md">
+                            {deal ? (
+                                <FileText className="h-5 w-5 text-primary-foreground" />
+                            ) : (
+                                <Plus className="h-5 w-5 text-primary-foreground" />
+                            )}
+                        </div>
+                        <div>
+                            <SheetTitle className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+                                {deal ? 'Deal Details' : 'Add New Deal'}
+                            </SheetTitle>
+                            {deal && (
+                                <p className="text-sm text-muted-foreground mt-0.5">
+                                    View and manage deal information
+                                </p>
+                            )}
+                        </div>
+                        {deal && (
+                            <div className="ml-auto">
+                                <Sparkles className="h-5 w-5 text-primary" />
+                            </div>
+                        )}
+                    </div>
                 </SheetHeader>
                 
                 <div className="grid h-[calc(100vh-5rem)] grid-cols-1 gap-6 overflow-auto p-6 lg:grid-cols-2">

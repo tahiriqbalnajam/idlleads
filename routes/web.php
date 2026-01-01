@@ -9,9 +9,7 @@ use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\WhatsAppController;
 
 Route::get('/', function () {
-    return Inertia::render('welcome', [
-        'canRegister' => Features::enabled(Features::registration()),
-    ]);
+    return redirect()->route('login');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {

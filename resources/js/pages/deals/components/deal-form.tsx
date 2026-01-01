@@ -11,6 +11,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { User, Phone, TrendingUp, AlertCircle, Users, Package } from 'lucide-react';
 
 interface DealFormProps {
     deal?: Deal;
@@ -79,14 +80,24 @@ export default function DealForm({ deal, users = [], products = [], onSubmit, di
     };
 
     return (
-        <Card className="h-fit">
-            <CardHeader>
-                <CardTitle>Deal Information</CardTitle>
+        <Card className="h-fit border-2 shadow-md">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-b-2">
+                <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 shadow-sm">
+                        <User className="h-4 w-4 text-white" />
+                    </div>
+                    <CardTitle className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
+                        Deal Information
+                    </CardTitle>
+                </div>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="clientName">Client Name</Label>
+                        <Label htmlFor="clientName" className="flex items-center gap-2 font-semibold">
+                            <User className="h-4 w-4 text-primary" />
+                            Client Name
+                        </Label>
                         <Input
                             id="clientName"
                             placeholder="Enter client name"
@@ -94,13 +105,17 @@ export default function DealForm({ deal, users = [], products = [], onSubmit, di
                             onChange={(e) => setClientName(e.target.value)}
                             required
                             disabled={disabled}
+                            className="border-2 focus:ring-2"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="phoneNumber">Phone Number</Label>
+                        <Label htmlFor="phoneNumber" className="flex items-center gap-2 font-semibold">
+                            <Phone className="h-4 w-4 text-primary" />
+                            Phone Number
+                        </Label>
                         <div className="relative">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold">
                                 +92
                             </span>
                             <Input
@@ -109,7 +124,7 @@ export default function DealForm({ deal, users = [], products = [], onSubmit, di
                                 value={phoneNumber}
                                 onChange={handlePhoneChange}
                                 disabled={disabled}
-                                className="pl-12"
+                                className="pl-12 border-2 focus:ring-2"
                                 maxLength={10}
                             />
                         </div>
@@ -119,13 +134,16 @@ export default function DealForm({ deal, users = [], products = [], onSubmit, di
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="stage">Stage</Label>
+                        <Label htmlFor="stage" className="flex items-center gap-2 font-semibold">
+                            <TrendingUp className="h-4 w-4 text-primary" />
+                            Stage
+                        </Label>
                         <Select
                             value={stage}
                             onValueChange={setStage}
                             disabled={disabled}
                         >
-                            <SelectTrigger id="stage">
+                            <SelectTrigger id="stage" className="border-2">
                                 <SelectValue placeholder="Select a stage" />
                             </SelectTrigger>
                             <SelectContent>
@@ -142,13 +160,16 @@ export default function DealForm({ deal, users = [], products = [], onSubmit, di
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="priority">Priority</Label>
+                        <Label htmlFor="priority" className="flex items-center gap-2 font-semibold">
+                            <AlertCircle className="h-4 w-4 text-primary" />
+                            Priority
+                        </Label>
                         <Select
                             value={priority}
                             onValueChange={setPriority}
                             disabled={disabled}
                         >
-                            <SelectTrigger id="priority">
+                            <SelectTrigger id="priority" className="border-2">
                                 <SelectValue placeholder="Select priority" />
                             </SelectTrigger>
                             <SelectContent>
@@ -165,13 +186,16 @@ export default function DealForm({ deal, users = [], products = [], onSubmit, di
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="assignedTo">Assigned To</Label>
+                        <Label htmlFor="assignedTo" className="flex items-center gap-2 font-semibold">
+                            <Users className="h-4 w-4 text-primary" />
+                            Assigned To
+                        </Label>
                         <Select
                             value={assignedTo}
                             onValueChange={setAssignedTo}
                             disabled={disabled}
                         >
-                            <SelectTrigger id="assignedTo">
+                            <SelectTrigger id="assignedTo" className="border-2">
                                 <SelectValue placeholder="Select user" />
                             </SelectTrigger>
                             <SelectContent>
@@ -188,13 +212,16 @@ export default function DealForm({ deal, users = [], products = [], onSubmit, di
                         </Select>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="product">Product</Label>
+                        <Label htmlFor="product" className="flex items-center gap-2 font-semibold">
+                            <Package className="h-4 w-4 text-primary" />
+                            Product
+                        </Label>
                         <Select
                             value={productId}
                             onValueChange={setProductId}
                             disabled={disabled}
                         >
-                            <SelectTrigger id="product">
+                            <SelectTrigger id="product" className="border-2">
                                 <SelectValue placeholder="Select product" />
                             </SelectTrigger>
                             <SelectContent>
@@ -210,7 +237,7 @@ export default function DealForm({ deal, users = [], products = [], onSubmit, di
                             </SelectContent>
                         </Select>
                     </div>
-                    <Button type="submit" className="w-full" disabled={disabled}>
+                    <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md font-semibold" disabled={disabled}>
                         {deal ? 'Update Deal' : 'Create Deal'}
                     </Button>
                 </form>

@@ -40,12 +40,30 @@ interface DealsProps {
 }
 
 const stageColors: Record<string, string> = {
-    'new': 'bg-blue-500',
-    'call': 'bg-yellow-500',
-    'in-progress': 'bg-purple-500',
-    'meeting': 'bg-orange-500',
-    'deal-lost': 'bg-red-500',
-    'close-deal': 'bg-green-500',
+    'new': 'from-blue-600 to-blue-700',
+    'call': 'from-amber-500 to-amber-600',
+    'in-progress': 'from-indigo-600 to-indigo-700',
+    'meeting': 'from-violet-600 to-violet-700',
+    'deal-lost': 'from-slate-500 to-slate-600',
+    'close-deal': 'from-emerald-600 to-emerald-700',
+};
+
+const stageBgColors: Record<string, string> = {
+    'new': 'bg-blue-50/50 dark:from-blue-950/10 dark:to-blue-900/10',
+    'call': 'bg-amber-50/50 dark:from-amber-950/10 dark:to-amber-900/10',
+    'in-progress': 'bg-indigo-50/50 dark:from-indigo-950/10 dark:to-indigo-900/10',
+    'meeting': 'bg-violet-50/50 dark:from-violet-950/10 dark:to-violet-900/10',
+    'deal-lost': 'bg-slate-50/50 dark:from-slate-950/10 dark:to-slate-900/10',
+    'close-deal': 'bg-emerald-50/50 dark:from-emerald-950/10 dark:to-emerald-900/10',
+};
+
+const stageBorderColors: Record<string, string> = {
+    'new': 'border-blue-200/60 dark:border-blue-800/40',
+    'call': 'border-amber-200/60 dark:border-amber-800/40',
+    'in-progress': 'border-indigo-200/60 dark:border-indigo-800/40',
+    'meeting': 'border-violet-200/60 dark:border-violet-800/40',
+    'deal-lost': 'border-slate-300/60 dark:border-slate-700/40',
+    'close-deal': 'border-emerald-200/60 dark:border-emerald-800/40',
 };
 
 const stageLabels: Record<string, string> = {
@@ -58,9 +76,9 @@ const stageLabels: Record<string, string> = {
 };
 
 const priorityColors: Record<string, string> = {
-    'low': 'bg-gray-500',
-    'medium': 'bg-yellow-500',
-    'high': 'bg-red-500',
+    'low': 'bg-slate-500',
+    'medium': 'bg-amber-500',
+    'high': 'bg-rose-600',
 };
 
 const priorityLabels: Record<string, string> = {
@@ -91,40 +109,43 @@ function DraggableDealCard({ deal, onClick }: DraggableDealCardProps) {
     return (
         <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
             <Card
-                className="cursor-grab active:cursor-grabbing transition-all hover:shadow-md"
+                className="cursor-grab active:cursor-grabbing transition-all hover:shadow-lg hover:scale-[1.02] bg-white dark:bg-slate-900 border-l-4 hover:border-primary/50"
+                style={{
+                    borderLeftColor: `hsl(var(--${deal.stage === 'new' ? 'blue' : deal.stage === 'call' ? 'amber' : deal.stage === 'in-progress' ? 'indigo' : deal.stage === 'meeting' ? 'violet' : deal.stage === 'deal-lost' ? 'slate' : 'emerald'}-600))`
+                }}
                 onClick={(e) => {
                     e.stopPropagation();
                     onClick();
                 }}
             >
-                <CardHeader className="pb-3">
+                <CardHeader className="pb-3 pt-3">
                     <div className="flex items-center justify-between gap-2">
-                        <CardTitle className="text-sm font-medium">
+                        <CardTitle className="text-sm font-semibold text-foreground">
                             {deal.clientName}
                         </CardTitle>
                         <Badge 
-                            className={`${priorityColors[deal.priority || 'medium']} text-white text-[10px] px-1.5 py-0 shrink-0`}
+                            className={`${priorityColors[deal.priority || 'medium']} text-white text-[10px] px-2 py-0.5 shrink-0 font-medium border-0`}
                         >
                             {priorityLabels[deal.priority || 'medium']}
                         </Badge>
                     </div>
                 </CardHeader>
-                <CardContent className="pb-3 space-y-2">
+                <CardContent className="pb-3 space-y-2.5">
                     {deal.phoneNumber && (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <Phone className="h-3 w-3" />
-                            <span>{deal.phoneNumber}</span>
+                        <div className="flex items-center gap-2 text-xs bg-muted/50 rounded-md px-2 py-1.5">
+                            <Phone className="h-3.5 w-3.5 text-primary" />
+                            <span className="font-medium">{deal.phoneNumber}</span>
                         </div>
                     )}
                     {deal.assignedTo && (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <UserCircle className="h-3 w-3" />
-                            <span>{deal.assignedTo.name}</span>
+                        <div className="flex items-center gap-2 text-xs bg-muted/50 rounded-md px-2 py-1.5">
+                            <UserCircle className="h-3.5 w-3.5 text-primary" />
+                            <span className="font-medium">{deal.assignedTo.name}</span>
                         </div>
                     )}
-                    <div className="flex items-center justify-between">
-                        <span className={`size-2 rounded-full ${stageColors[deal.stage]}`} />
-                        <span className="text-muted-foreground text-xs">
+                    <div className="flex items-center justify-between pt-1">
+                        <div className={`h-2 w-2 rounded-full ${deal.stage === 'new' ? 'bg-blue-600' : deal.stage === 'call' ? 'bg-amber-500' : deal.stage === 'in-progress' ? 'bg-indigo-600' : deal.stage === 'meeting' ? 'bg-violet-600' : deal.stage === 'deal-lost' ? 'bg-slate-500' : 'bg-emerald-600'}`} />
+                        <span className="text-muted-foreground text-[11px] font-medium">
                             {new Date(deal.created_at || '').toLocaleDateString()}
                         </span>
                     </div>
@@ -149,13 +170,13 @@ function DroppableStageColumn({ stage, deals, onDealClick }: DroppableStageColum
     return (
         <div 
             ref={setNodeRef} 
-            className={`flex flex-col gap-3 transition-colors rounded-lg p-2 ${isOver ? 'bg-primary/10 ring-2 ring-primary' : ''}`}
+            className={`flex flex-col gap-3 transition-all duration-200 rounded-lg p-3 ${stageBgColors[stage]} border ${stageBorderColors[stage]} ${isOver ? 'ring-2 ring-primary/30 scale-[1.02] shadow-lg' : 'shadow-sm'}`}
         >
-            <div className="flex items-center justify-between rounded-lg border bg-muted/50 p-3">
+            <div className={`flex items-center justify-between rounded-md border ${stageBorderColors[stage]} ${stageBgColors[stage]} p-3`}>
                 <h3 className="font-semibold text-sm">
                     {stageLabels[stage]}
                 </h3>
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-xs font-semibold">
                     {deals.length}
                 </Badge>
             </div>
@@ -331,16 +352,16 @@ export default function Deals({ deals, users, products, filters }: DealsProps) {
                                 </div>
                                 <DragOverlay>
                                     {activeDeal ? (
-                                        <Card className="rotate-3 shadow-2xl opacity-90">
-                                            <CardHeader className="pb-3">
-                                                <CardTitle className="text-sm font-medium">
+                                        <Card className="rotate-3 shadow-2xl opacity-95 border-2 border-primary bg-white dark:bg-slate-900">
+                                            <CardHeader className="pb-3 pt-3">
+                                                <CardTitle className="text-sm font-semibold">
                                                     {activeDeal.clientName}
                                                 </CardTitle>
                                             </CardHeader>
                                             <CardContent className="pb-3">
                                                 <div className="flex items-center justify-between">
-                                                    <span className={`size-2 rounded-full ${stageColors[activeDeal.stage]}`} />
-                                                    <span className="text-muted-foreground text-xs">
+                                                    <div className={`h-2 w-2 rounded-full ${activeDeal.stage === 'new' ? 'bg-blue-600' : activeDeal.stage === 'call' ? 'bg-amber-500' : activeDeal.stage === 'in-progress' ? 'bg-indigo-600' : activeDeal.stage === 'meeting' ? 'bg-violet-600' : activeDeal.stage === 'deal-lost' ? 'bg-slate-500' : 'bg-emerald-600'}`} />
+                                                    <span className="text-muted-foreground text-xs font-medium">
                                                         {new Date(activeDeal.created_at || '').toLocaleDateString()}
                                                     </span>
                                                 </div>
